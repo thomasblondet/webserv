@@ -1,6 +1,9 @@
 *.o
+obj
 a.out
 webserv
+webserv.dSYM
 .*.swp
 .DS_Store
 .vscode
+webserv.xcworkspace

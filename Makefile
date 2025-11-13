@@ -1,7 +1,7 @@
 NAME = webserv
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -O2 #-g
-SRC = src/main.cpp
+CXXFLAGS = #-Wall -Wextra -Werror -std=c++98 -O2 
+SRC = src/main.cpp src/Server.cpp src/Parser.cpp
 INC = -Iinclude
 OBJ = $(patsubst src/%.cpp,obj/%.o,$(SRC))
 
