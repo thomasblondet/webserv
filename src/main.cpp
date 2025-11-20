@@ -8,6 +8,12 @@ int main(int argc, char *argv[])
 	}
 	Parser p((std::string(argv[1])));
 	std::vector<Config> v = p.build_config();
-	Server s(v);
+	try {
+		Server s(v);
+	}
+	catch (std::exception& e) {
+		std::cerr << e.what() << "\n";
+		return 1;
+	}
 	return 0;
 }

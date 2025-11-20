@@ -39,16 +39,30 @@ int Server::init_listener(Config cfg)
 	struct addrinfo *servinfo;
 	int yes = 1;
 
-	memset(&hints, 0, sizeof(hints));
+	std::memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
-	getaddrinfo(cfg.address.c_str(), cfg.port.c_str(), &hints, &servinfo);
+
+	int rv = getaddrinfo(cfg.address.c_str(), cfg.port.c_str(), &hints, &servinfo);
+	if (rv != 0)
+		throw std::runtime_error("getaddrinfo");
 	listening_socket = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
-	setsockopt(listening_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
-	bind(listening_socket, servinfo->ai_addr, servinfo->ai_addrlen);
+	if (listening_socket == -1)
+		throw std::runtime_error("socket");
+	rv = setsockopt(listening_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+	if (rv == -1)
+		throw std::runtime_error("setsockopt");
+	rv = bind(listening_socket, servinfo->ai_addr, servinfo->ai_addrlen);
+	if (rv == -1)
+		throw std::runtime_error("bind");
+
 	freeaddrinfo(servinfo);
-	listen(listening_socket, 10);
+
+	rv = listen(listening_socket, 10);
+	if (rv == -1)
+		throw std::runtime_error("listen");
+
     return listening_socket;
 }
 
