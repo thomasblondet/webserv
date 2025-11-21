@@ -4,11 +4,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstring> // std::memset
+#include <algorithm> // std::find
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
 #include <sys/poll.h>
 #include <unistd.h>
+
 #include "Parser.h"
 
 typedef struct Request {
