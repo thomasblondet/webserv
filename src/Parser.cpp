@@ -1,4 +1,4 @@
-#include "Parser.h"
+#include "Parser.hpp"
 
 Parser::Parser(const std::string &config_file) : m_config_file(config_file)
 {
