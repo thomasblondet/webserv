@@ -10,11 +10,15 @@ install_and_configure_nginx.sh # install script
 nginx-1.28.0.tar.gz # archive
 ```
 
+---
+
 To install and configure nginx:
 ```bash
 chmod +x install_and_configure_nginx.sh
 ./install_and_configure_nginx.sh
 ```
+
+---
 
 Here are the most useful commands: (maybe use sudo 😏):
 
@@ -37,4 +41,17 @@ Here are the most useful commands: (maybe use sudo 😏):
 rm -rf nginx-1.28.0 nginx-1.28.0.tar.gz nginx-test/
 ```
 
-To test the default conf, we can go to  `http://localhost:80`
+---
+
+To test the default conf, we can go to
+
+
+```
+http://localhost:80
+```
+
+or
+
+```bash
+curl -v -i --http1.0 --get http://localhost:80
+```
