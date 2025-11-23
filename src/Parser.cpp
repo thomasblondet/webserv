@@ -1,6 +1,6 @@
 #include "Parser.hpp"
 
-Parser::Parser(const std::string &config_file) : m_config_file(config_file)
+Parser::Parser(const std::string &config_file) : _config_file(config_file)
 {
     init_handler();
 }
@@ -12,12 +12,13 @@ void Parser::init_handler()
     handler["index"] = &Parser::index;
 }
 
-void trim_spaces(std::string& s)
+void trim_spaces(std::string &s)
 {
     std::string::size_type first = 0;
     while (first < s.size() && std::isspace(static_cast<unsigned char>(s[first])))
         ++first;
-    if (first == s.size()) {
+    if (first == s.size())
+	{
         s.clear();
         return;
     }
@@ -30,18 +31,21 @@ void trim_spaces(std::string& s)
 std::vector<Config> Parser::build_config()
 {
     std::vector<Config> v;
-    std::ifstream ifs(m_config_file.c_str());
+    std::ifstream ifs(_config_file.c_str());
     std::string line;
 
-    while (std::getline(ifs, line)) {
+    while (std::getline(ifs, line))
+	{
         std::istringstream iss(line);
         std::string token;
         iss >> token;
         if (line.empty() || line[0] == '#')
             continue;
-        if (token == "server") {
+        if (token == "server")
+		{
             Config cfg;
-            while (std::getline(ifs, line)) {
+            while (std::getline(ifs, line))
+			{
                 std::istringstream iss2(line);
                 std::string token2;
                 iss2 >> token2;
@@ -53,7 +57,8 @@ std::vector<Config> Parser::build_config()
                 // Call handler function
                 std::map<std::string, Handler>::iterator it;
                 it = handler.find(token2);
-                if (it != handler.end()) {
+                if (it != handler.end())
+				{
                     (this->*it->second)(cfg, line);
                     continue;
                 }
@@ -78,26 +83,28 @@ void Parser::listen(Config& cfg, const std::string& line)
 	std::getline(iss, address, ':');
 	std::istringstream parse_address(address);
 	std::string unit;
-	while (std::getline(parse_address, unit, '.')) {
+	while (std::getline(parse_address, unit, '.'))
+	{
 		std::istringstream convert(unit);
 		int nbr;
 		convert >> nbr;
 		if (convert.fail() || !convert.eof() || nbr < 0 || nbr > 255)
-			; // TODO exception
+			throw std::runtime_error("Invalid address");
 		++octet;
 	}
-	if (octet != 4) ; // TODO exception
+	if (octet != 4)
+		throw std::runtime_error("Invalid address");
 
 	// Parse port
 	std::getline(iss, token, ' ');
-	for (int i = 0; i < token.size(); ++i)
+	for (size_t i = 0; i < token.size(); ++i)
 		if (!std::isdigit(token[i]))
-			; // TODO exception
+			throw std::runtime_error("Invalid port");
 	iss.clear();
 	iss.str(token);
 	iss >> port;
 	if (iss.fail() || !iss.eof() || port < 1 || port > 65535)
-		; // TODO exception
+		throw std::runtime_error("Invalid port");
 	
 	cfg.address = address;
 	cfg.port = token;
@@ -112,7 +119,7 @@ void Parser::root(Config& cfg, const std::string& line)
 	iss >> token; iss >> token;
 
 	if (stat(token.c_str(), &info) || iss.fail() || !iss.eof())
-		; // TODO exception
+		throw std::runtime_error("Invalid root");
 	
 	cfg.root = token;
 }
@@ -126,7 +133,8 @@ void Parser::index(Config& cfg, const std::string& line)
 
 	std::string path = cfg.root + "/" + token;
 	std::ifstream ifs(path.c_str());
-	if (!ifs.is_open()) ; // TODO exception
+	if (!ifs.is_open())
+		throw std::runtime_error("Invalid index");
 
 	cfg.index = token;
 }

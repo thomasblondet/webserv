@@ -15,21 +15,21 @@ ListeningSocket::ListeningSocket(const char *address, const char *port)
 	if (status != 0)
 		throw std::runtime_error("getaddrinfo");
 	
-	fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-	if (fd == -1)
+	_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	if (_fd == -1)
 		throw std::runtime_error("socket");
 
-	status = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+	status = setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
 	if (status == -1)
 		throw std::runtime_error("setsockopt");
 
-	status = bind(fd, res->ai_addr, res->ai_addrlen);
+	status = bind(_fd, res->ai_addr, res->ai_addrlen);
 	if (status == -1)
 		throw std::runtime_error("bind");
 
 	freeaddrinfo(res);
 
-	status = listen(fd, 10);
+	status = listen(_fd, 10);
 	if (status == -1)
 		throw std::runtime_error("listen");
 }
@@ -38,7 +38,7 @@ ListeningSocket::~ListeningSocket()
 {
 }
 
-int ListeningSocket::getFd() const
+int ListeningSocket::get_fd() const
 {
-	return fd;
+	return _fd;
 }

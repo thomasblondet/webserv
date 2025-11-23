@@ -5,29 +5,29 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <unordered_map>
+#include <map>
 #include <algorithm>
 
 class Request
 {
 public:
     Request(const char *buf);
-    std::string getMethod() const;
-    std::string getUrl() const;
-    std::string getHttpVersion() const;
-    std::unordered_map<std::string, std::string> getHeaders() const;
-    std::string getBody() const;
+    std::string get_method() const;
+    std::string get_uri() const;
+    std::string get_http_version() const;
+    std::map<std::string, std::string> get_headers() const;
+    std::string get_body() const;
 
 private:
-    std::string method;
-    std::string url;
-    std::string httpVersion;
-    std::unordered_map<std::string, std::string> headers;
-    std::string body;
+    std::string _method;
+    std::string _uri;
+    std::string _http_version;
+    std::map<std::string, std::string> _headers;
+    std::string _body;
 
-    void handleStatusLine(const std::string &line);
-    void handleHeaders(std::istringstream &iss);
-    void handleBody(std::istringstream &iss);
+    void handle_status_line(const std::string &line);
+    void handle_headers(std::istringstream &iss);
+    void handle_body(std::istringstream &iss);
 };
 
 #endif

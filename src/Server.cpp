@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(const std::vector<Config>& configs_vector)
+Server::Server(const std::vector<Config> &configs_vector)
 {
 	// Init all ListeningSocket found in the config file
     for (size_t i = 0; i < configs_vector.size(); i++)
@@ -8,9 +8,9 @@ Server::Server(const std::vector<Config>& configs_vector)
 		// Create the ListeningSocket and push it to pollfd
 		ListeningSocket s(configs_vector[i].address.c_str(), configs_vector[i].port.c_str());
 
-        struct pollfd listener = { s.getFd(), POLLIN, 0 };
+        struct pollfd listener = { s.get_fd(), POLLIN, 0 };
 
-        m_fds.push_back(listener);
+        _fds.push_back(listener);
     }
 
     handle_clients();
@@ -21,19 +21,19 @@ void Server::handle_clients()
     std::cout << "Waiting for connection..." << std::endl;
 
     std::vector<int> listening_sockets;
-    for (size_t i = 0; i < m_fds.size(); i++)
+    for (size_t i = 0; i < _fds.size(); i++)
 	{
-        listening_sockets.push_back(m_fds[i].fd);
-		std::cout << "Listening on fd: " << m_fds[i].fd << "\n";
+        listening_sockets.push_back(_fds[i].fd);
+		std::cout << "Listening on fd " << _fds[i].fd << "...\n";
 	}
 
     while (1)
 	{
         // Pointer to pollfd vector to monitor each socket
-        struct pollfd *ppollfds = &m_fds[0];
-        poll(ppollfds, m_fds.size(), -1);
+        struct pollfd *ppollfds = &_fds[0];
+        poll(ppollfds, _fds.size(), -1);
 
-        for (size_t i = 0; i < m_fds.size(); i++)
+        for (size_t i = 0; i < _fds.size(); i++)
 		{
             std::vector<int>::iterator it;
             it = std::find(listening_sockets.begin(), listening_sockets.end(), ppollfds[i].fd);
@@ -41,7 +41,7 @@ void Server::handle_clients()
 			// If listening socket => new incoming connection
 			// Else read request
             if (it != listening_sockets.end() && ppollfds[i].revents & POLLIN)
-				accept_new_connection(m_fds[i].fd);
+				accept_new_connection(_fds[i].fd);
             else if (ppollfds[i].revents & POLLIN)
 				handle_request(ppollfds, i);
         }
@@ -59,16 +59,16 @@ void Server::accept_new_connection(int listening_socket)
 
 	// Push new client to poll
 	struct pollfd new_client = {fd, POLLIN, 0};
-	m_fds.push_back(new_client);
-	std::cout << "New connection -> fd: " << fd << std::endl;
+	_fds.push_back(new_client);
+	std::cout << "New connection on fd " << fd << ".\n";
 }
 
 // Temp
 void print_request(const Request &req)
 {
-	std::cout << "Method -> " << req.getMethod() << "\n";
-	std::cout << "URL -> " << req.getUrl() << "\n";
-	std::cout << "HTTP Version -> " << req.getHttpVersion() << "\n";
+	std::cout << "Method: " << req.get_method() << "\n";
+	std::cout << "URI: " << req.get_uri() << "\n";
+	std::cout << "HTTP Version: " << req.get_http_version() << "\n";
 }
 
 void Server::handle_request(struct pollfd *ppollfds, size_t &i)
@@ -81,7 +81,7 @@ void Server::handle_request(struct pollfd *ppollfds, size_t &i)
 	if (nrecv <= 0)
 	{
 		close(ppollfds[i].fd);
-		m_fds.erase(m_fds.begin() + 1);
+		_fds.erase(_fds.begin() + 1);
 		i--;
 	}
 	else

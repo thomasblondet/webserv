@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	
+	(void)argv; // temp
 	try
 	{
 		// Test with hardcoded Config file for now

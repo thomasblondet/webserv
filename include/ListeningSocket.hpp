@@ -14,10 +14,10 @@ class ListeningSocket
 public:
 	ListeningSocket(const char *address, const char *port);
 	~ListeningSocket();
-	int getFd() const;
+	int get_fd() const;
 
 private:
-	int fd;
+	int _fd;
 };
 
 #endif // LISTENINGSOCKET_H

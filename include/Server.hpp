@@ -20,10 +20,11 @@
 class Server
 {
 public:
-    Server(const std::vector<Config>& configs_vector);
+    Server(const std::vector<Config> &configs_vector);
 
 private:
-	std::vector<struct pollfd> m_fds;
+	std::vector<struct pollfd> _fds;
+
 	void handle_clients();
 	void accept_new_connection(int listening_socket);
 	void handle_request(struct pollfd *ppollfds, size_t &i);

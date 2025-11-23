@@ -10,19 +10,22 @@
 
 #include <sys/stat.h>
 
-typedef struct Config {
+typedef struct Config
+{
     std::string address;
     std::string port;
     std::string root;
     std::string index;
 } Config;
 
-class Parser {
+class Parser
+{
 public:
     Parser(const std::string& config_file);
     std::vector<Config> build_config();
+
 private:
-    std::string m_config_file;
+    std::string _config_file;
 
     // Handler
     typedef void (Parser::*Handler)(Config&, const std::string&);

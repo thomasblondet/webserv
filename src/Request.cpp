@@ -12,12 +12,12 @@ Request::Request(const char *buf)
     if (line.empty())
         throw std::runtime_error("No status line");
 
-    handleStatusLine(line);
-    //handleHeaders(iss); // WIP
-    handleBody(iss);
+    handle_status_line(line);
+    //handle_headers(iss); // WIP
+    handle_body(iss);
 }
 
-void Request::handleStatusLine(const std::string &line)
+void Request::handle_status_line(const std::string &line)
 {
     std::istringstream iss(line);
     if (!iss)
@@ -27,21 +27,21 @@ void Request::handleStatusLine(const std::string &line)
     iss >> token;
     if (token.empty())
         throw std::runtime_error("No method");
-    method = token;
+    _method = token;
 
     iss >> token;
     if (token.empty())
-        throw std::runtime_error("No url");
-    url = token;
+        throw std::runtime_error("No uri");
+    _uri = token;
 
     iss >> token;
     if (token.empty())
         throw std::runtime_error("No http version");
-    httpVersion = token;
+    _http_version = token;
 }
 
 // WIP: need more context
-void Request::handleHeaders(std::istringstream &iss)
+void Request::handle_headers(std::istringstream &iss)
 {
     std::string line;
 
@@ -63,11 +63,11 @@ void Request::handleHeaders(std::istringstream &iss)
         if (temp.empty())
             throw std::runtime_error("headers");
 
-        headers[temp] = token;
+        _headers[temp] = token;
     }
 }
 
-void Request::handleBody(std::istringstream &iss)
+void Request::handle_body(std::istringstream &iss)
 {
     std::stringstream buf;
 
@@ -76,30 +76,30 @@ void Request::handleBody(std::istringstream &iss)
     if (str.empty())
         return;
     else
-        body = str;
+        _body = str;
 }
 
-std::string Request::getMethod() const
+std::string Request::get_method() const
 {
-    return method;
+    return _method;
 }
 
-std::string Request::getUrl() const
+std::string Request::get_uri() const
 {
-    return url;
+    return _uri;
 }
 
-std::string Request::getHttpVersion() const
+std::string Request::get_http_version() const
 {
-    return httpVersion;
+    return _http_version;
 }
 
-std::unordered_map<std::string, std::string> Request::getHeaders() const
+std::map<std::string, std::string> Request::get_headers() const
 {
-    return headers;
+    return _headers;
 }
 
-std::string Request::getBody() const
+std::string Request::get_body() const
 {
-    return body;
+    return _body;
 }
