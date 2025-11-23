@@ -4,7 +4,9 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -std=c++98 -O2 -MMD -MP
 SRC =	src/main.cpp\
 		src/Parser.cpp\
-		src/Server.cpp
+		src/Server.cpp\
+		src/ListeningSocket.cpp\
+		src/Request.cpp
 INC = -Iinclude
 OBJ = $(patsubst src/%.cpp,obj/%.o,$(SRC))
 

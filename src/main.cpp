@@ -2,16 +2,24 @@
 
 int main(int argc, char *argv[])
 {
-	if (argc != 2) {
+	if (argc != 2)
+	{
 		std::cerr << "Usage: ./webserv <configuration file>\n";
 		return 1;
 	}
-	Parser p((std::string(argv[1])));
-	std::vector<Config> v = p.build_config();
-	try {
+	
+	try
+	{
+		// Test with hardcoded Config file for now
+		Config cfg = { "127.0.0.1", "8081", "www", "index.html" };
+		std::vector<Config> v;
+		v.push_back(cfg);
+
+		// Start the server with the Config file
 		Server s(v);
 	}
-	catch (std::exception& e) {
+	catch (std::exception& e)
+	{
 		std::cerr << e.what() << "\n";
 		return 1;
 	}

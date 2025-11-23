@@ -14,28 +14,19 @@
 #include <unistd.h>
 
 #include "Parser.hpp"
+#include "ListeningSocket.hpp"
+#include "Request.hpp"
 
-typedef struct Request {
-	// Status Line
-	std::string method;
-	std::string uri;
-	std::string version;
-	// Header
-	std::map<std::string, std::string> headers;
-	// Body (POST)
-	std::string body;
-} Request;
-
-class Server {
+class Server
+{
 public:
-    Server(const std::vector<Config>& v);
-	void print(std::vector<Config> v) const; // tmp
+    Server(const std::vector<Config>& configs_vector);
+
 private:
-	std::vector<Config> m_cfgs;
 	std::vector<struct pollfd> m_fds;
-	int init_listener(Config cfg);
-	void accept_connection();
-	Request parse_request(const std::string& buf);
+	void handle_clients();
+	void accept_new_connection(int listening_socket);
+	void handle_request(struct pollfd *ppollfds, size_t &i);
 };
 
 #endif // SERVER_H
