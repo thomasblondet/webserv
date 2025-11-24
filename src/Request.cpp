@@ -17,6 +17,24 @@ Request::Request(const char *buf)
     handle_body(iss);
 }
 
+Request::Request(const Request &src)
+{
+	*this = src;
+}
+
+Request &Request::operator=(const Request &rhs)
+{
+	if (this != &rhs)
+	{
+		_method = rhs.get_method();
+		_uri = rhs.get_uri();
+		_http_version = rhs.get_http_version();
+		_headers = rhs.get_headers();
+		_body = rhs.get_body();
+	}
+	return *this;
+}
+
 void Request::handle_status_line(const std::string &line)
 {
     std::istringstream iss(line);

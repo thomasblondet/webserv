@@ -12,6 +12,8 @@ class Request
 {
 public:
     Request(const char *buf);
+	Request(const Request &src);
+	Request &operator=(const Request &rhs);
     std::string get_method() const;
     std::string get_uri() const;
     std::string get_http_version() const;
