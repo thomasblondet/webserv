@@ -15,7 +15,10 @@ echo $PROJECT_DIR
 # https://nginx.org/en/download.html
 # Stable version is nginx-1.28.0
 rm -rf nginx-1.28.0.tar.gz
-wget https://nginx.org/download/nginx-1.28.0.tar.gz
+rm -rf nginx-1.28.0
+rm -rf nginx-test
+
+curl -O https://nginx.org/download/nginx-1.28.0.tar.gz
 tar -xzf nginx-1.28.0.tar.gz
 cd nginx-1.28.0
 
