@@ -1,15 +1,64 @@
 # Nginx Configuration Guide with Examples
 
 This document expands your template with **complete, realistic Nginx examples**, so you can understand how to configure:
-- Listening interfaces and ports
-- Error pages
-- Maximum client body size
-- Method restrictions
-- Redirections
-- Root directories per location
-- Directory listing
-- Default index files
-- File uploads
+1. Listening interfaces and ports
+2. Error pages
+3. Maximum client body size
+4. Method restrictions
+5. Redirections
+6. Root directories per location
+7. Directory listing
+8. Default index files
+9. File uploads
+10. Execution of CGI based on file extension
+
+---
+## What is virtual hosts?
+The concept of virtual hosts **allows more than one Web site on one system or Web server**. The servers are **differentiated by their host name**. Visitors to the Web site are **routed by host name or IP address** to the correct virtual host. Virtual hosting allows companies sharing one server to each have their own domain names. For example www.company1.com and www.company2.com can both be hosted on the same server.
+
+* [How nginx processes a request?](https://nginx.org/en/docs/http/request_processing.html)
+
+1. Name-based virtual servers
+```nginx
+server {
+    listen      80;
+    server_name example.org www.example.org;
+    ...
+}
+
+server {
+    listen      80;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      80;
+    server_name example.com www.example.com;
+    ...
+}
+```
+
+2. Mixed name-based and IP-based virtual servers
+```nginx
+server {
+    listen      192.168.1.1:80;
+    server_name example.org www.example.org;
+    ...
+}
+
+server {
+    listen      192.168.1.1:80;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      192.168.1.2:80;
+    server_name example.com www.example.com;
+    ...
+}
+```
 
 ---
 
@@ -59,6 +108,9 @@ server {
 ---
 
 ## 3. Maximum Allowed Client Body Size
+
+https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+
 Controls maximum upload size or POST body size.
 
 ```nginx
@@ -145,6 +197,8 @@ URL `/kapouet/pouic/toto` → filesystem: `/tmp/www/pouic/toto`
 ---
 
 ## 7. Directory Listing (autoindex)
+https://nginx.org/en/docs/http/ngx_http_autoindex_module.html
+
 Show files in a folder (disabled by default).
 
 ```nginx
@@ -209,45 +263,36 @@ server {
 }
 ```
 
+### Example: Storing files using nginx-upload-module
+* [nginx-upload-module](https://github.com/fdintino/nginx-upload-module)
+```nginx
+server {
+}
+```
+
+---
+
+## 10. Execution of CGI
+
+* [Common Gateway Interface: wikipedia](https://en.wikipedia.org/wiki/Common_Gateway_Interface)
+* [The Common Gateway Interface (CGI) Version 1.1](https://datatracker.ietf.org/doc/html/rfc3875)
+
+A typical use case: 
+1. A web user submits a web form on a web page that uses CGI. The form's data is sent to the web server within a HTTP request with a URL denoting a CGI script. 
+2. The web server then launches the CGI script in a new computer process, passing the form data to it.
+3. The CGI script passes its output, usually in the form of HTML, to the Web server.
+4. The server relays it back to the browser as its response to the browser's request.
+
+```nginx
+server {
+}
+```
+
 ---
 
 ## Combined Example Server
 Here is a full, realistic config showing all concepts.
 
 ```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    root /var/www/public;
-    index index.html;
-    error_page 404 /errors/404.html;
-
-    client_max_body_size 5m;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location /kapouet/ {
-        root /tmp/www;
-        client_max_body_size 1m;
-    }
-
-    location /old/ {
-        return 301 /new/;
-    }
-
-    location /directory/ {
-        autoindex on;
-    }
-
-    location /upload/ {
-        limit_except POST { deny all; }
-        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME /var/www/upload.php;
-    }
-}
 ```
 
