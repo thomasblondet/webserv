@@ -74,7 +74,7 @@ void Request::handle_headers(std::istringstream &iss)
         line_stream >> temp;
         if (temp.empty())
             throw std::runtime_error("headers");
-        if (temp.back() == ':')
+        if (temp[temp.size() - 1] == ':')
             temp = temp.substr(0, temp.size() - 1);
 
         line_stream >> token;
