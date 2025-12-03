@@ -16,18 +16,20 @@
 #include "Parser.hpp"
 #include "ListeningSocket.hpp"
 #include "Request.hpp"
+#include "Response.hpp"
 
 class Server
 {
 public:
-    Server(const std::vector<Config> &configs_vector);
+    Server(const std::vector<Config> &configs);
 
 private:
-	std::vector<struct pollfd> _fds;
+	std::vector<struct pollfd> _monitor;
+	std::vector<int> _listeners;
 
-	void handle_clients();
-	void accept_new_connection(int listening_socket);
-	void handle_request(struct pollfd *ppollfds, size_t &i);
+	void process_events();
+	void handle_new_connection(int listening_fd);
+	void handle_client_data(size_t &pos);
 };
 
 #endif // SERVER_H
