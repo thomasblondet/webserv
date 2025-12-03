@@ -13,11 +13,11 @@ int main(int argc, char *argv[])
 	{
 		// Test with hardcoded Config file for now
 		Config cfg = { "127.0.0.1", "8081", "www", "index.html" };
-		std::vector<Config> v;
-		v.push_back(cfg);
+		std::vector<Config> listeners;
+		listeners.push_back(cfg);
 
 		// Start the server with the Config file
-		Server s(v);
+		Server s(listeners);
 	}
 	catch (std::exception& e)
 	{

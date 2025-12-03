@@ -4,8 +4,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <cstring> // std::memset
-#include <algorithm> // std::find
+#include <cstring>
+#include <algorithm>
 
 #include <sys/socket.h>
 #include <sys/types.h>

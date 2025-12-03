@@ -6,7 +6,8 @@ SRC =	src/main.cpp\
 		src/Parser.cpp\
 		src/Server.cpp\
 		src/ListeningSocket.cpp\
-		src/Request.cpp
+		src/Request.cpp\
+		src/Response.cpp
 INC = -Iinclude
 OBJ = $(patsubst src/%.cpp,obj/%.o,$(SRC))
 
