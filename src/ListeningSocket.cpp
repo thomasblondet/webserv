@@ -1,6 +1,7 @@
 #include "ListeningSocket.hpp"
 
 ListeningSocket::ListeningSocket(const char *address, const char *port)
+: _address(std::string(address)), _port(std::string(port))
 {
 	struct addrinfo hints;
 	struct addrinfo *res;
@@ -41,4 +42,14 @@ ListeningSocket::~ListeningSocket()
 int ListeningSocket::get_fd() const
 {
 	return _fd;
+}
+
+const std::string ListeningSocket::get_address() const
+{
+	return _address;
+}
+
+const std::string ListeningSocket::get_port() const
+{
+	return _port;
 }
