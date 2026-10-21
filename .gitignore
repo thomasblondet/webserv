@@ -1,0 +1,8 @@
+/obj/
+/webserv
+.DS_Store
+.vscode/
+.idea/
+*.swp
+/site/uploads/*
+!/site/uploads/.gitkeep

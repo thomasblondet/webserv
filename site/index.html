@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Webserv</title>
+</head>
+<body>
+    <h1>Webserv</h1>
+    <p>Page servie depuis <code>site/index.html</code>.</p>
+
+    <h2>Tester les uploads</h2>
+    <p>Les requêtes ci-dessous utilisent <code>/uploads/test.txt</code>.</p>
+    <label for="content">Contenu du fichier :</label><br>
+    <textarea id="content" rows="4" cols="50">Bonjour depuis Webserv !</textarea><br>
+    <button type="button" id="post">POST : créer ou remplacer</button>
+    <button type="button" id="get">GET : lire</button>
+    <button type="button" id="delete">DELETE : supprimer</button>
+    <p><a href="/uploads/">Voir le contenu du dossier uploads</a></p>
+
+    <h2>Tester le CGI Python</h2>
+    <p>Le script <code>/cgi/echo.py</code> renvoie la méthode, les paramètres d'URL et le corps reçu.</p>
+    <label for="cgi-content">Message :</label><br>
+    <textarea id="cgi-content" rows="3" cols="50">Bonjour CGI !</textarea><br>
+    <button type="button" id="cgi-get">GET CGI</button>
+    <button type="button" id="cgi-post">POST CGI</button>
+
+    <h2>Réponse du serveur</h2>
+    <pre id="response">Aucune requête envoyée.</pre>
+
+    <script>
+        const path = '/uploads/test.txt';
+        const output = document.getElementById('response');
+
+        async function request(method, url, data) {
+            output.textContent = method + ' ' + url + ' : en cours...';
+            try {
+                const options = { method: method };
+                if (data !== undefined) {
+                    options.body = data;
+                    options.headers = { 'Content-Type': 'text/plain' };
+                }
+                const result = await fetch(url, options);
+                const body = await result.text();
+                output.textContent = method + ' ' + url + '\nHTTP ' + result.status + ' ' + result.statusText + '\n\n' + (body || '(réponse vide)');
+            } catch (error) {
+                output.textContent = 'Échec de la requête : ' + error.message;
+            }
+        }
+
+        document.getElementById('post').onclick = function () {
+            request('POST', path, document.getElementById('content').value);
+        };
+        document.getElementById('get').onclick = function () { request('GET', path); };
+        document.getElementById('delete').onclick = function () { request('DELETE', path); };
+        document.getElementById('cgi-get').onclick = function () {
+            request('GET', '/cgi/echo.py?source=page');
+        };
+        document.getElementById('cgi-post').onclick = function () {
+            request('POST', '/cgi/echo.py?source=page', document.getElementById('cgi-content').value);
+        };
+    </script>
+</body>
+</html>
